@@ -3,8 +3,8 @@
 # Começando com os imports
 import csv
 import matplotlib.pyplot as plt
-import sys
 
+import sys
 
 # Vamos ler os dados como uma lista de dicionários
 print("Lendo o documento...")
@@ -21,11 +21,11 @@ print(len(data_list))
 # Imprimindo a primeira linha de data_list para verificar se funcionou.
 print("Linha 0: ")
 print(data_list[0])
-# É o cabeçalho dos dados, para que possamos identificar as colunas. Se a lista é uma lista
-# de dicionários, então esta linha será a primeira viagem e suas informações. 
+# É o cabeçalho dos dados, para que possamos identificar as colunas.
+# obs: Se a lista é uma lista de dicionários, então esta linha será a primeira viagem e suas informações (features). 
 
-# Imprimindo a segunda linha de data_list, ela deveria conter alguns dados. Se a lista é 
-# uma lista de dicionários, então esta será a segunda viagem e suas informações.
+# Imprimindo a segunda linha de data_list, ela deveria conter alguns dados.
+# obs: Se a lista é uma lista de dicionários, então esta será a segunda viagem e suas informações.
 print("Linha 1: ")
 print(data_list[1])
 
@@ -35,11 +35,11 @@ input("Aperte Enter para continuar...")
 print("\n\nTAREFA 1: Imprimindo as primeiras 20 amostras")
 
 for k in range(20):
-    #print(data_list[k])
     print(list(data_list[k].values()))
 
 
 # Vamos mudar o data_list para remover o cabeçalho dele.
+# obs: Isto não é necessário quando se usa lista de dicionários
 # data_list = data_list[1:]
 
 # Nós podemos acessar as features pelo índice
@@ -47,7 +47,7 @@ for k in range(20):
 
 # Sendo uma lista de dicionários, cada índice da lista é uma viagem registrada em forma de
 # dicionário. Podemos acessar as features usando os seus próprios nomes como chaves
-# Exemplo: sample = data_list[k] retorna a k-ésima viagem. sample['Gender'] retorna o gênero.
+# Exemplo: sample = data_list[k] retorna a k-ésima viagem como um dicionário. sample['Gender'] retorna o gênero.
 
 # As features são:
 # ['Start Time', 'End Time', 'Trip Duration', 'Start Station', 'End Station', 'User Type', 'Gender', 'Birth Year']
@@ -65,8 +65,8 @@ print("\nTAREFA 2: Imprimindo o gênero das primeiras 20 amostras")
 
 # Impressão com a numeração para conferir as 20 amostras
 for i, d in enumerate(data_list[:20]):
-    print('{}: {}'.format(i+1,d['Gender']))
-
+    print('{:>7}: {}'.format(i+1,d['Gender']))
+sys.exit()
 
 # Ótimo! Nós podemos pegar as linhas(samples) iterando com um for, e as colunas(features) por índices.
 # Mas ainda é difícil pegar uma coluna em uma lista. Exemplo: Lista com todos os gêneros
@@ -77,9 +77,13 @@ input("Aperte Enter para continuar...")
 
 # Solução: já que se optou por uma lista de dicionários, ao ínves do índice usamos diretamente o label da feature desejada.
 # Para não alterar o tratamento dos asserts, criou-se uma lista de fetaures para associar o índice de entrada com a respectiva feature 
-def column_to_list(data, index):
-    # data:  lista de dicionários com as mesmas chaves em cada
-    # index: índice que representa uma feature
+def column_to_list(data, index: int):
+    # Argumentos:
+    #   data:  lista de dicionários com as features de cada viagem
+    #   index: índice que representa uma feature
+    # Retorna:
+    #   column_list: lista com as features desejadas para as viagens descritas em 'data'
+
     column_list = []
     features = list(data[0].keys())
     #print(features)  
@@ -105,8 +109,6 @@ input("Aperte Enter para continuar...")
 # TAREFA 4
 # TODO: Conte cada gênero. Você não deveria usar uma função parTODO isso.
 
-# Solução: Se não se deve utilizar uma função direta para calcular isso, vamos proceder assim:
-# Ao invés de percorrer a lista de dicionários, podemos percorrer diretamente a lista de gêneros com a função anterior
 male = 0
 female = 0
 for trip in data_list:
@@ -131,7 +133,12 @@ input("Aperte Enter para continuar...")
 # TODO: Crie uma função para contar os gêneros. Retorne uma lista.
 # Isso deveria retornar uma lista com [count_male, count_female] (exemplo: [10, 15] significa 10 Masculinos, 15 Femininos)
 def count_gender(data):
-    # data: lista de dicionários 
+    # Função para contar o número de usuários para cada gênero (Masculino ou Feminino).
+    # Argumentos
+    #   data: lista de dicionários com as features de cada viagem 
+    # Retorna:
+    #   [male,female]: uma lista com as quantidades de cada gênero
+
     male = 0
     female = 0
     for trip in data:
@@ -156,10 +163,17 @@ input("Aperte Enter para continuar...")
 # TAREFA 6
 # TODO: Crie uma função que pegue o gênero mais popular, e retorne este gênero como uma string.
 # Esperamos ver "Masculino", "Feminino", ou "Igual" como resposta.
+
 def most_popular_gender(data):
-    # data: lista de dicionários 
+    # Função para determinar o gênero mais popular.
+    # Argumentos:
+    #   data: lista de dicionários com as features de cada viagem 
+    # Retorna:
+    #   answer: string com o gênero mais popular. Caso a popularidade seja igual, retorna 'Igual'.
+
     answer = ""
-    n_genders = count_gender(data_list)  # gerar a lista com número de homens e mulheres com função já desenvolvida
+    # gerar a lista com número de homens e mulheres com função a já desenvolvida count_gender
+    n_genders = count_gender(data_list)  
     if n_genders[0] > n_genders[1]:
         answer += 'Masculino'
     elif n_genders[0] < n_genders[1]:
@@ -195,20 +209,26 @@ input("Aperte Enter para continuar...")
 print("\nTAREFA 7: Verifique o gráfico!")
 
 def count_users(data):
-    # data: lista de dicionários 
-    subscriber = 0
-    customer = 0
+
+    # Função para contar os usuários de cada tipo. 
+    # Argumentos:
+    #   data: lista de dicionários 
+    # Retorna:
+    #   [subscribers, customers]: lista com a quantidade de cada tipo de usuário
+
+    subscribers = 0
+    customers = 0
     for trip in data:
         if trip['User Type'] == 'Subscriber':
-            subscriber += 1
+            subscribers += 1
         elif trip['User Type'] == 'Customer':
-            customer += 1
-    return [subscriber, customer]
+            customers += 1
+    return [subscribers, customers]
 
 user_list = column_to_list(data_list, 6)
 user_types = ["Subscriber", "Customer"]
-user_quantity = count_users(data_list) # lista 1x2
-y_pos = list(range(len(user_types)))    # lista [0,1]
+user_quantity = count_users(data_list) 
+y_pos = list(range(len(user_types)))     
 plt.bar(y_pos, user_quantity)
 plt.ylabel('Quantidade')
 plt.xlabel('Tipo de Usuário')
@@ -237,10 +257,19 @@ input("Aperte Enter para continuar...")
 # Você não deve usar funções prontas parTODO isso, como max() e min().
  
 def statistics_from_list(data):
-    # data é uma lista de strings representando as durações das viagens
-    # portanto, vamos criar uma lista de floats para operar sobre ela
-    # para calcular a mediana, a lista precisa estar ordenada
+    
+    # Função que calcula estatísticas básicas das durações de viagens.
+    # Argumentos:
+    #   data: lista de strings representando as durações das viagens
+    # Retorna:
+    #   min_trip: duração mínima das viagens
+    #   max_trip: duração máxima das viagens
+    #   mean_trip: média de duração das viagens
+    #   median_trip: mediana da duração das viagens
+
+    # Vamos criar uma lista de floats para operar sobre ela, pois o argumento vem em formato de string
     trip_durations = [float(i) for i in data]
+    # para calcular a mediana, a lista precisa estar ordenada
     trip_durations.sort()
     n = len(trip_durations)
     min_trip = trip_durations[0]
@@ -279,10 +308,7 @@ input("Aperte Enter para continuar...")
 # talvez o ideal era o objeto se chamar 'station_type' ou 'stations', mas vou usar o sugerido. Havia utilizado 'user_types' acima para tipo de usuário
 
 start_stations_list = column_to_list(data_list, 3)
-print(len(start_stations_list))
-print(start_stations_list[:4])
 user_types = list(set(start_stations_list))
-
 
 print("\nTAREFA 10: Imprimindo as start stations:")
 print(len(user_types))
@@ -296,7 +322,7 @@ input("Aperte Enter para continuar...")
 # TAREFA 11
 # Volte e tenha certeza que você documenteou suas funções. Explique os parâmetros de entrada, a saída, e o que a função faz. Exemplo:
 # def new_function(param1: int, param2: str) -> list:
-      """
+''' 
       Função de exemplo com anotações.
       Argumentos:
           param1: O primeiro parâmetro.
@@ -304,7 +330,7 @@ input("Aperte Enter para continuar...")
       Retorna:
           Uma lista de valores x.
 
-      """
+'''
 
 input("Aperte Enter para continuar...")
 # TAREFA 12 - Desafio! (Opcional)
@@ -317,6 +343,7 @@ def count_items(column_list):
     item_types = [type for type in set(column_list)]
     count_items = []
     for type in item_types:
+        count = []
         count = [i for i in column_list if i == type]
         count_items.append(len(count))
     return item_types, count_items
