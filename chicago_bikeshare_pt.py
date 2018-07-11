@@ -13,7 +13,7 @@ with open("chicago.csv", "r") as file_read:
     reader = csv.DictReader(file_read) 
     data_list = list(reader)
 print("Ok!")
-
+'''
 # Vamos verificar quantas linhas nós temos
 print("Número de linhas:")
 print(len(data_list))
@@ -36,7 +36,7 @@ print("\n\nTAREFA 1: Imprimindo as primeiras 20 amostras")
 
 for k in range(20):
     print(list(data_list[k].values()))
-
+sys.exit()
 
 # Vamos mudar o data_list para remover o cabeçalho dele.
 # obs: Isto não é necessário quando se usa lista de dicionários
@@ -66,7 +66,6 @@ print("\nTAREFA 2: Imprimindo o gênero das primeiras 20 amostras")
 # Impressão com a numeração para conferir as 20 amostras
 for i, d in enumerate(data_list[:20]):
     print('{:>7}: {}'.format(i+1,d['Gender']))
-sys.exit()
 
 # Ótimo! Nós podemos pegar as linhas(samples) iterando com um for, e as colunas(features) por índices.
 # Mas ainda é difícil pegar uma coluna em uma lista. Exemplo: Lista com todos os gêneros
@@ -74,7 +73,7 @@ sys.exit()
 input("Aperte Enter para continuar...")
 # TAREFA 3
 # TODO: Crie uma função para adicionar as colunas(features) de uma lista em outra lista, na mesma ordem
-
+'''        
 # Solução: já que se optou por uma lista de dicionários, ao ínves do índice usamos diretamente o label da feature desejada.
 # Para não alterar o tratamento dos asserts, criou-se uma lista de fetaures para associar o índice de entrada com a respectiva feature 
 def column_to_list(data, index: int):
@@ -91,7 +90,7 @@ def column_to_list(data, index: int):
     column_list = [trip[features[index]] for trip in data]
     return column_list
 
-
+'''
 # Vamos checar com os gêneros se isso está funcionando (apenas para os primeiros 20)
 print("\nTAREFA 3: Imprimindo a lista de gêneros das primeiras 20 amostras")
 print(column_to_list(data_list, -2)[:20])
@@ -322,7 +321,7 @@ input("Aperte Enter para continuar...")
 # TAREFA 11
 # Volte e tenha certeza que você documenteou suas funções. Explique os parâmetros de entrada, a saída, e o que a função faz. Exemplo:
 # def new_function(param1: int, param2: str) -> list:
-''' 
+
       Função de exemplo com anotações.
       Argumentos:
           param1: O primeiro parâmetro.
@@ -330,7 +329,7 @@ input("Aperte Enter para continuar...")
       Retorna:
           Uma lista de valores x.
 
-'''
+
 
 input("Aperte Enter para continuar...")
 # TAREFA 12 - Desafio! (Opcional)
@@ -338,9 +337,11 @@ input("Aperte Enter para continuar...")
 # para que nós possamos usar essa função com outra categoria de dados.
 print("Você vai encarar o desafio? (yes ou no)")
 answer = "yes"
-
+'''        
 def count_items(column_list):
-    item_types = [type for type in set(column_list)]
+    set_list = list(set(column_list))
+    set_list.sort()
+    item_types = [type for type in set_list] # o sort ajudará quando os types tem ordem própria
     count_items = []
     for type in item_types:
         count = []
@@ -348,7 +349,7 @@ def count_items(column_list):
         count_items.append(len(count))
     return item_types, count_items
 
-
+'''
 if answer == "yes":
     # ------------ NÃO MUDE NENHUM CÓDIGO AQUI ------------
     column_list = column_to_list(data_list, -2)
@@ -358,3 +359,61 @@ if answer == "yes":
     assert len(types) == 3, "TAREFA 11: Há 3 tipos de gênero!"
     assert sum(counts) == 1551505, "TAREFA 11: Resultado de retorno incorreto!"
     # -----------------------------------------------------
+'''
+input("Aperte Enter para continuar...a seguir, temos as tarefas adicionais...")
+# ---------------------------------------------------------
+#                 PERGUNTAS ADICIONAIS
+# ---------------------------------------------------------
+
+# TAREFA 13
+# Faça um gráfico mensal mostrando o uso das biciletas. 
+'''
+print("\nTAREFA 13: gráfico mensal de uso das bicicletas:")
+# Vamos gerar a lista de starttime e endtime e em seguida os meses:
+start_datetimes = column_to_list(data_list,0)
+end_datetimes = column_to_list(data_list,1)
+start_month = [date[5:7] for date in start_datetimes]
+
+# Vamos verificar se alguma rota ultrapassa um mês (ao pegar a bicicleta no final do último dia de um mês, por exemplo)
+count_month_passes = 0
+for i,j in zip(start_datetimes, end_datetimes):
+    if i[5:7] != j[5:7]: # "Rota ultrapassa um mês!"
+        count_month_passes += 1
+print('Existem {} rota(s) que ultrapassam um mês (cerca de {}% do total)'.format(count_month_passes, round(count_month_passes/len(data_list)*100,6)))
+# A evidência de algum caso acima distorce um pouco a contagem do uso por mês, mas no geral não deve comprometer um simples panorama dos meses de maior e menor uso 
+# Assim, vamos usar como referência a lista start_month
+months, month_counts = count_items(start_month)
+
+y_pos = list(range(len(months)))     
+plt.bar(y_pos, month_counts)
+plt.ylabel('Quantidade')
+plt.xlabel('Mês')
+plt.xticks(y_pos, months)
+plt.title('Quantidade de usos por mês')
+plt.show(block=True)
+'''
+
+# TAREFA 14
+# Qual a rota mais popular para o período? 
+
+# Criar a lista de strings de rotas e gerar o conjunto de rotas distintas para contagem
+data_routes = [trip['Start Station'] + '->' + trip['End Station'] for trip in data_list]
+print(data_routes[0])
+routes_dict = dict.fromkeys(list(set(data_routes)))
+print(len(routes_dict))
+popular_route_name = ''
+popular_route_count = 0
+for key in routes_dict.keys():
+    routes_dict[key] = 0
+    for route in data_routes:
+        if route == key:
+            routes_dict[key] += 1 
+    if routes_dict[key] > popular_route_count:
+        popular_route_name = key
+        popular_route_count = routes_dict[key]
+
+print(' A rota mais popular é:\n {} ({} usos'.format(popular_route_name, popular_route_count))
+
+
+
+
