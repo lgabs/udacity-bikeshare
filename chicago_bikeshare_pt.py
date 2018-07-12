@@ -5,6 +5,7 @@ import csv
 import matplotlib.pyplot as plt
 
 import sys
+import time
 
 # Vamos ler os dados como uma lista de dicionários
 print("Lendo o documento...")
@@ -339,13 +340,12 @@ print("Você vai encarar o desafio? (yes ou no)")
 answer = "yes"
 '''        
 def count_items(column_list):
-    set_list = list(set(column_list))
-    set_list.sort()
-    item_types = [type for type in set_list] # o sort ajudará quando os types tem ordem própria
+    item_types = list(set(column_list)) 
+    item_types.sort()  # o sort ajudará quando os types tem ordem própria
     count_items = []
-    for type in item_types:
+    for item_type in item_types:
         count = []
-        count = [i for i in column_list if i == type]
+        count = [i for i in column_list if i == item_type]
         count_items.append(len(count))
     return item_types, count_items
 
@@ -394,26 +394,24 @@ plt.show(block=True)
 '''
 
 # TAREFA 14
-# Qual a rota mais popular para o período? 
+# Qual as estações mais populares para ínicio e fim de viagem? O número de start stations é igual ao número de end stations?
 
-# Criar a lista de strings de rotas e gerar o conjunto de rotas distintas para contagem
-data_routes = [trip['Start Station'] + '->' + trip['End Station'] for trip in data_list]
-print(data_routes[0])
-routes_dict = dict.fromkeys(list(set(data_routes)))
-print(len(routes_dict))
-popular_route_name = ''
-popular_route_count = 0
-for key in routes_dict.keys():
-    routes_dict[key] = 0
-    for route in data_routes:
-        if route == key:
-            routes_dict[key] += 1 
-    if routes_dict[key] > popular_route_count:
-        popular_route_name = key
-        popular_route_count = routes_dict[key]
+print("\nTAREFA 14: número de start/end stations e as estações mais populares:")
+start_stations_types, start_stations_count = count_items(column_to_list(data_list,3))
+end_stations_types, end_stations_count = count_items(column_to_list(data_list,4))
 
-print(' A rota mais popular é:\n {} ({} usos'.format(popular_route_name, popular_route_count))
+popular_start_station = {'Name': '', 'Count': 0}
+popular_end_station = {'Name': '', 'Count': 0}
+for elem, count in zip (start_stations_types, start_stations_count):
+    #print('{} ~ {}'.format(elem, count))
+    #input('enter...')
+    if count > popular_start_station['Count']:
+        popular_start_station['Name'] = elem
+        popular_start_station['Count'] = count
+for elem, count in zip(end_stations_types, end_stations_count):
+    if count > popular_end_station['Count']:
+        popular_end_station['Name'] = elem
+        popular_end_station['Count'] = count
 
-
-
-
+print('Start Stations: {}\nMost popular: {} ({} usos\n)'.format(len(start_stations_types), popular_start_station['Name'], popular_start_station['Count']))
+print('End Stations: {}\nMost popular: {} ({} usos)'.format(len(end_stations_types), popular_end_station['Name'], popular_end_station['Count']))
