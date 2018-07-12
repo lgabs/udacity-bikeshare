@@ -1,34 +1,33 @@
 # coding: utf-8
+# autor: Luan Fernandes (lgabs)
+# Resumo do código: 
+#   Trata-se de tarefas que exploram os dados de uso de bicicletas compartilhadas na região de Chicago pela empresa Divvy
+#   As tarefas compõem o projeto 1 do curso de Data Science 1 da Udacity 
 
 # Começando com os imports
 import csv
 import matplotlib.pyplot as plt
 
-import sys
-import time
-
-# Vamos ler os dados como uma lista de dicionários
+# Vamos ler os dados como uma lista de dicionários em que os labels das features são chaves
 print("Lendo o documento...")
 with open("chicago.csv", "r") as file_read:
     #reader = csv.reader(file_read)
     reader = csv.DictReader(file_read) 
     data_list = list(reader)
 print("Ok!")
-'''
+
 # Vamos verificar quantas linhas nós temos
 print("Número de linhas:")
 print(len(data_list))
 
 # Imprimindo a primeira linha de data_list para verificar se funcionou.
+# Como a lista é uma lista de dicionários, esta linha será a primeira viagem e suas informações (features). 
 print("Linha 0: ")
 print(data_list[0])
-# É o cabeçalho dos dados, para que possamos identificar as colunas.
-# obs: Se a lista é uma lista de dicionários, então esta linha será a primeira viagem e suas informações (features). 
 
-# Imprimindo a segunda linha de data_list, ela deveria conter alguns dados.
-# obs: Se a lista é uma lista de dicionários, então esta será a segunda viagem e suas informações.
-print("Linha 1: ")
-print(data_list[1])
+# Imprimindo as informações da primeira viagem (primeira linha do arquivo csv):
+print("Dados da primeira viagem registrada:")
+print(list(data_list[0].values()))
 
 input("Aperte Enter para continuar...")
 # TAREFA 1
@@ -37,14 +36,6 @@ print("\n\nTAREFA 1: Imprimindo as primeiras 20 amostras")
 
 for k in range(20):
     print(list(data_list[k].values()))
-sys.exit()
-
-# Vamos mudar o data_list para remover o cabeçalho dele.
-# obs: Isto não é necessário quando se usa lista de dicionários
-# data_list = data_list[1:]
-
-# Nós podemos acessar as features pelo índice
-# Por exemplo: sample[6] para imprimir gênero, ou sample[-2]
 
 # Sendo uma lista de dicionários, cada índice da lista é uma viagem registrada em forma de
 # dicionário. Podemos acessar as features usando os seus próprios nomes como chaves
@@ -53,45 +44,35 @@ sys.exit()
 # As features são:
 # ['Start Time', 'End Time', 'Trip Duration', 'Start Station', 'End Station', 'User Type', 'Gender', 'Birth Year']
 
-
 input("Aperte Enter para continuar...")
 # TAREFA 2
 # TODO: Imprima o `gênero` das primeiras 20 linhas
 
 print("\nTAREFA 2: Imprimindo o gênero das primeiras 20 amostras")
-
-# Impressão direta
-#for k in range(20):
-#    print(data_list[k]['Gender'])
-
 # Impressão com a numeração para conferir as 20 amostras
-for i, d in enumerate(data_list[:20]):
-    print('{:>7}: {}'.format(i+1,d['Gender']))
-
-# Ótimo! Nós podemos pegar as linhas(samples) iterando com um for, e as colunas(features) por índices.
-# Mas ainda é difícil pegar uma coluna em uma lista. Exemplo: Lista com todos os gêneros
+for i, sample in enumerate(data_list[:20]):
+    print('{:>7}: {}'.format(i+1,sample['Gender']))
 
 input("Aperte Enter para continuar...")
 # TAREFA 3
 # TODO: Crie uma função para adicionar as colunas(features) de uma lista em outra lista, na mesma ordem
-'''        
-# Solução: já que se optou por uma lista de dicionários, ao ínves do índice usamos diretamente o label da feature desejada.
-# Para não alterar o tratamento dos asserts, criou-se uma lista de fetaures para associar o índice de entrada com a respectiva feature 
+        
+# Solução: já que se optou por uma lista de dicionários, usamos diretamente o label da feature desejada.
+# Para não alterar o tratamento dos asserts (que acessam a feature pelo índice e não pelo label),
+# criou-se uma lista de fetaures para associar o índice de entrada com a respectiva feature 
 def column_to_list(data, index: int):
+    # Função para criar uma lista de valores de uma certa feature a partir do dataset.
     # Argumentos:
-    #   data:  lista de dicionários com as features de cada viagem
+    #   data:  lista de dicionários com as features de cada viagem e seus valores
     #   index: índice que representa uma feature
     # Retorna:
-    #   column_list: lista com as features desejadas para as viagens descritas em 'data'
+    #   column_list: lista com os valores das features desejadas para as viagens descritas em 'data'
 
     column_list = []
     features = list(data[0].keys())
-    #print(features)  
-    # Dica: Você pode usar um for para iterar sobre as amostras, pegar a feature pelo seu índice, e dar append para uma lista
     column_list = [trip[features[index]] for trip in data]
     return column_list
 
-'''
 # Vamos checar com os gêneros se isso está funcionando (apenas para os primeiros 20)
 print("\nTAREFA 3: Imprimindo a lista de gêneros das primeiras 20 amostras")
 print(column_to_list(data_list, -2)[:20])
@@ -107,7 +88,7 @@ assert column_to_list(data_list, -2)[0] == "" and column_to_list(data_list, -2)[
 input("Aperte Enter para continuar...")
 # Agora sabemos como acessar as features, vamos contar quantos Male (Masculinos) e Female (Femininos) o dataset tem
 # TAREFA 4
-# TODO: Conte cada gênero. Você não deveria usar uma função parTODO isso.
+# TODO: Conte cada gênero. Você não deveria usar uma função para fazer isso.
 
 male = 0
 female = 0
@@ -116,7 +97,6 @@ for trip in data_list:
         male += 1
     elif trip['Gender'] == 'Female':
         female += 1
-
 
 # Verificando o resultado
 print("\nTAREFA 4: Imprimindo quantos masculinos e femininos nós encontramos")
@@ -128,14 +108,14 @@ assert male == 935854 and female == 298784, "TAREFA 4: A conta não bate."
 
 
 input("Aperte Enter para continuar...")
-# Por que nós não criamos uma função parTODO isso?
+# Por que nós não criamos uma função para fazer isso?
 # TAREFA 5
 # TODO: Crie uma função para contar os gêneros. Retorne uma lista.
 # Isso deveria retornar uma lista com [count_male, count_female] (exemplo: [10, 15] significa 10 Masculinos, 15 Femininos)
 def count_gender(data):
     # Função para contar o número de usuários para cada gênero (Masculino ou Feminino).
     # Argumentos
-    #   data: lista de dicionários com as features de cada viagem 
+    #   data: lista de dicionários com as features de cada viagem e seus valores
     # Retorna:
     #   [male,female]: uma lista com as quantidades de cada gênero
 
@@ -167,12 +147,12 @@ input("Aperte Enter para continuar...")
 def most_popular_gender(data):
     # Função para determinar o gênero mais popular.
     # Argumentos:
-    #   data: lista de dicionários com as features de cada viagem 
+    #   data: lista de dicionários com as features de cada viagem e seus valores
     # Retorna:
     #   answer: string com o gênero mais popular. Caso a popularidade seja igual, retorna 'Igual'.
 
     answer = ""
-    # gerar a lista com número de homens e mulheres com função a já desenvolvida count_gender
+    # gerar a lista com número de homens e mulheres com função já desenvolvida count_gender
     n_genders = count_gender(data_list)  
     if n_genders[0] > n_genders[1]:
         answer += 'Masculino'
@@ -194,8 +174,8 @@ assert most_popular_gender(data_list) == "Masculino", "TAREFA 6: Resultado de re
 # Se tudo está rodando como esperado, verifique este gráfico!
 gender_list = column_to_list(data_list, -2)
 types = ["Male", "Female"]
-quantity = count_gender(data_list) #lista
-y_pos = list(range(len(types)))    #lista [0,1]
+quantity = count_gender(data_list) 
+y_pos = list(range(len(types)))    
 plt.bar(y_pos, quantity)
 plt.ylabel('Quantidade')
 plt.xlabel('Gênero')
@@ -209,10 +189,9 @@ input("Aperte Enter para continuar...")
 print("\nTAREFA 7: Verifique o gráfico!")
 
 def count_users(data):
-
     # Função para contar os usuários de cada tipo. 
     # Argumentos:
-    #   data: lista de dicionários 
+    #   data: lista de dicionários com as features de cada viagem e seus valores 
     # Retorna:
     #   [subscribers, customers]: lista com a quantidade de cada tipo de usuário
 
@@ -254,13 +233,12 @@ input("Aperte Enter para continuar...")
 # Vamos trabalhar com trip_duration (duração da viagem) agora. Não conseguimos tirar alguns valores dele.
 # TAREFA 9
 # TODO: Ache a duração de viagem Mínima, Máxima, Média, e Mediana.
-# Você não deve usar funções prontas parTODO isso, como max() e min().
+# Você não deve usar funções prontas para fazer isso, como max() e min().
  
 def statistics_from_list(data):
-    
     # Função que calcula estatísticas básicas das durações de viagens.
     # Argumentos:
-    #   data: lista de strings representando as durações das viagens
+    #   data: lista de strings representando as durações das viagens 
     # Retorna:
     #   min_trip: duração mínima das viagens
     #   max_trip: duração máxima das viagens
@@ -305,7 +283,7 @@ input("Aperte Enter para continuar...")
 # Gênero é fácil porque nós temos apenas algumas opções. E quanto a start_stations? Quantas opções ele tem?
 # TODO: Verifique quantos tipos de start_stations nós temos, usando set()
 
-# talvez o ideal era o objeto se chamar 'station_type' ou 'stations', mas vou usar o sugerido. Havia utilizado 'user_types' acima para tipo de usuário
+# talvez o ideal seja o objeto se chamar 'station_type' ou 'stations', mas vou usar o sugerido.'user_types' foi recomendado acima para tipo de usuário
 
 start_stations_list = column_to_list(data_list, 3)
 user_types = list(set(start_stations_list))
@@ -322,15 +300,14 @@ input("Aperte Enter para continuar...")
 # TAREFA 11
 # Volte e tenha certeza que você documenteou suas funções. Explique os parâmetros de entrada, a saída, e o que a função faz. Exemplo:
 # def new_function(param1: int, param2: str) -> list:
-
+'''
       Função de exemplo com anotações.
       Argumentos:
           param1: O primeiro parâmetro.
           param2: O segundo parâmetro.
       Retorna:
           Uma lista de valores x.
-
-
+'''
 
 input("Aperte Enter para continuar...")
 # TAREFA 12 - Desafio! (Opcional)
@@ -338,10 +315,10 @@ input("Aperte Enter para continuar...")
 # para que nós possamos usar essa função com outra categoria de dados.
 print("Você vai encarar o desafio? (yes ou no)")
 answer = "yes"
-'''        
+        
 def count_items(column_list):
     item_types = list(set(column_list)) 
-    item_types.sort()  # o sort ajudará quando os types tem ordem própria
+    item_types.sort()  # o sort ajudará quando os types tem ordem própria (ex: meses em formato numérico ou ano de nascimento)
     count_items = []
     for item_type in item_types:
         count = []
@@ -349,7 +326,7 @@ def count_items(column_list):
         count_items.append(len(count))
     return item_types, count_items
 
-'''
+
 if answer == "yes":
     # ------------ NÃO MUDE NENHUM CÓDIGO AQUI ------------
     column_list = column_to_list(data_list, -2)
@@ -359,15 +336,15 @@ if answer == "yes":
     assert len(types) == 3, "TAREFA 11: Há 3 tipos de gênero!"
     assert sum(counts) == 1551505, "TAREFA 11: Resultado de retorno incorreto!"
     # -----------------------------------------------------
-'''
-input("Aperte Enter para continuar...a seguir, temos as tarefas adicionais...")
+
+input("A seguir, temos as tarefas adicionais. Aperte Enter para continuar...")
 # ---------------------------------------------------------
 #                 PERGUNTAS ADICIONAIS
 # ---------------------------------------------------------
 
 # TAREFA 13
 # Faça um gráfico mensal mostrando o uso das biciletas. 
-'''
+
 print("\nTAREFA 13: gráfico mensal de uso das bicicletas:")
 # Vamos gerar a lista de starttime e endtime e em seguida os meses:
 start_datetimes = column_to_list(data_list,0)
@@ -391,8 +368,8 @@ plt.xlabel('Mês')
 plt.xticks(y_pos, months)
 plt.title('Quantidade de usos por mês')
 plt.show(block=True)
-'''
 
+input("Aperte Enter para continuar...")
 # TAREFA 14
 # Qual as estações mais populares para ínicio e fim de viagem? O número de start stations é igual ao número de end stations?
 
@@ -403,8 +380,6 @@ end_stations_types, end_stations_count = count_items(column_to_list(data_list,4)
 popular_start_station = {'Name': '', 'Count': 0}
 popular_end_station = {'Name': '', 'Count': 0}
 for elem, count in zip (start_stations_types, start_stations_count):
-    #print('{} ~ {}'.format(elem, count))
-    #input('enter...')
     if count > popular_start_station['Count']:
         popular_start_station['Name'] = elem
         popular_start_station['Count'] = count
@@ -415,3 +390,4 @@ for elem, count in zip(end_stations_types, end_stations_count):
 
 print('Start Stations: {}\nMost popular: {} ({} usos\n)'.format(len(start_stations_types), popular_start_station['Name'], popular_start_station['Count']))
 print('End Stations: {}\nMost popular: {} ({} usos)'.format(len(end_stations_types), popular_end_station['Name'], popular_end_station['Count']))
+print('------ Fim do Projeto 1 ------')
