@@ -64,14 +64,14 @@ def column_to_list(data, index: int):
     # Função para criar uma lista de valores de uma certa feature a partir do dataset.
     # Argumentos:
     #   data:  lista de dicionários com as features de cada viagem e seus valores
-    #   index: índice que representa uma feature
+    #   index: índice que representa o label de uma feature
     # Retorna:
-    #   column_list: lista com os valores das features desejadas para as viagens descritas em 'data'
+    #   feature_list: lista com os valores das features desejadas para as viagens descritas em 'data'
 
-    column_list = []
+    feature_list = []
     features = list(data[0].keys())
-    column_list = [trip[features[index]] for trip in data]
-    return column_list
+    feature_list = [trip[features[index]] for trip in data]
+    return feature_list
 
 # Vamos checar com os gêneros se isso está funcionando (apenas para os primeiros 20)
 print("\nTAREFA 3: Imprimindo a lista de gêneros das primeiras 20 amostras")
@@ -171,7 +171,9 @@ assert type(most_popular_gender(data_list)) is str, "TAREFA 6: Tipo incorreto no
 assert most_popular_gender(data_list) == "Masculino", "TAREFA 6: Resultado de retorno incorreto!"
 # -----------------------------------------------------
 
+input("Aperte Enter para continuar...")
 # Se tudo está rodando como esperado, verifique este gráfico!
+print("\nGráfico de quantidades de uso para cada gênero:")
 gender_list = column_to_list(data_list, -2)
 types = ["Male", "Female"]
 quantity = count_gender(data_list) 
@@ -186,7 +188,7 @@ plt.show(block=True)
 input("Aperte Enter para continuar...")
 # TAREFA 7
 # TODO: Crie um gráfico similar para user_types. Tenha certeza que a legenda está correta.
-print("\nTAREFA 7: Verifique o gráfico!")
+print("\nTAREFA 7: Verifique o seguinte gráfico! Ele indica as quantidades de usos entre homens e mulheres")
 
 def count_users(data):
     # Função para contar os usuários de cada tipo. 
@@ -297,6 +299,7 @@ assert len(user_types) == 582, "TAREFA 10: Comprimento errado de start stations.
 # -----------------------------------------------------
 
 input("Aperte Enter para continuar...")
+print("\nTAREFA 11: Verificação da documentação do código (ver código em um editor de texto).")
 # TAREFA 11
 # Volte e tenha certeza que você documenteou suas funções. Explique os parâmetros de entrada, a saída, e o que a função faz. Exemplo:
 # def new_function(param1: int, param2: str) -> list:
@@ -315,6 +318,7 @@ input("Aperte Enter para continuar...")
 # para que nós possamos usar essa função com outra categoria de dados.
 print("Você vai encarar o desafio? (yes ou no)")
 answer = "yes"
+print(answer)
         
 def count_items(column_list):
     item_types = list(set(column_list)) 
@@ -388,6 +392,6 @@ for elem, count in zip(end_stations_types, end_stations_count):
         popular_end_station['Name'] = elem
         popular_end_station['Count'] = count
 
-print('Start Stations: {}\nMost popular: {} ({} usos\n)'.format(len(start_stations_types), popular_start_station['Name'], popular_start_station['Count']))
+print('Start Stations: {}\nMost popular: {} ({} usos)\n'.format(len(start_stations_types), popular_start_station['Name'], popular_start_station['Count']))
 print('End Stations: {}\nMost popular: {} ({} usos)'.format(len(end_stations_types), popular_end_station['Name'], popular_end_station['Count']))
 print('------ Fim do Projeto 1 ------')
