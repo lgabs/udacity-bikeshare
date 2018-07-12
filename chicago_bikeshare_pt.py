@@ -60,7 +60,7 @@ input("Aperte Enter para continuar...")
 # Solução: já que se optou por uma lista de dicionários, usamos diretamente o label da feature desejada.
 # Para não alterar o tratamento dos asserts (que acessam a feature pelo índice e não pelo label),
 # criou-se uma lista de fetaures para associar o índice de entrada com a respectiva feature 
-def column_to_list(data, index: int):
+def column_to_list(data: list, index: int):
     # Função para criar uma lista de valores de uma certa feature a partir do dataset.
     # Argumentos:
     #   data:  lista de dicionários com as features de cada viagem e seus valores
@@ -112,7 +112,7 @@ input("Aperte Enter para continuar...")
 # TAREFA 5
 # TODO: Crie uma função para contar os gêneros. Retorne uma lista.
 # Isso deveria retornar uma lista com [count_male, count_female] (exemplo: [10, 15] significa 10 Masculinos, 15 Femininos)
-def count_gender(data):
+def count_gender(data: list):
     # Função para contar o número de usuários para cada gênero (Masculino ou Feminino).
     # Argumentos
     #   data: lista de dicionários com as features de cada viagem e seus valores
@@ -144,7 +144,7 @@ input("Aperte Enter para continuar...")
 # TODO: Crie uma função que pegue o gênero mais popular, e retorne este gênero como uma string.
 # Esperamos ver "Masculino", "Feminino", ou "Igual" como resposta.
 
-def most_popular_gender(data):
+def most_popular_gender(data: list):
     # Função para determinar o gênero mais popular.
     # Argumentos:
     #   data: lista de dicionários com as features de cada viagem e seus valores
@@ -190,7 +190,7 @@ input("Aperte Enter para continuar...")
 # TODO: Crie um gráfico similar para user_types. Tenha certeza que a legenda está correta.
 print("\nTAREFA 7: Verifique o seguinte gráfico! Ele indica as quantidades de usos entre homens e mulheres")
 
-def count_users(data):
+def count_users(data: list):
     # Função para contar os usuários de cada tipo. 
     # Argumentos:
     #   data: lista de dicionários com as features de cada viagem e seus valores 
@@ -237,7 +237,7 @@ input("Aperte Enter para continuar...")
 # TODO: Ache a duração de viagem Mínima, Máxima, Média, e Mediana.
 # Você não deve usar funções prontas para fazer isso, como max() e min().
  
-def statistics_from_list(data):
+def statistics_from_list(data: list):
     # Função que calcula estatísticas básicas das durações de viagens.
     # Argumentos:
     #   data: lista de strings representando as durações das viagens 
@@ -265,7 +265,6 @@ def statistics_from_list(data):
         median_trip = (trip_durations[int(n/2-1)] + trip_durations[int(n/2+1-1)])/2
     else:
         median_trip = trip_durations[int((n+1)/2-1)]
-    print(median_trip)
     return min_trip, max_trip, mean_trip, median_trip
 
 min_trip, max_trip, mean_trip, median_trip = statistics_from_list(column_to_list(data_list, 2))
@@ -320,7 +319,15 @@ print("Você vai encarar o desafio? (yes ou no)")
 answer = "yes"
 print(answer)
         
-def count_items(column_list):
+def count_items(column_list: list):
+    # Função que calcula quantas corrências distintas há em uma lista de valores de features retirada do dataset
+    # Assim, pode-se aplicá-la em qualquer uma das features do dataset
+    # Argumentos:
+    #   column_list: lista de valores de features para cada viagem do dataset
+    # Retorna:
+    #   item_types: tipos distintos de valores para a feature em questão
+    #   count_items: ocorrências de cada tipo dentro da column_list 
+
     item_types = list(set(column_list)) 
     item_types.sort()  # o sort ajudará quando os types tem ordem própria (ex: meses em formato numérico ou ano de nascimento)
     count_items = []
@@ -341,7 +348,7 @@ if answer == "yes":
     assert sum(counts) == 1551505, "TAREFA 11: Resultado de retorno incorreto!"
     # -----------------------------------------------------
 
-input("A seguir, temos as tarefas adicionais. Aperte Enter para continuar...")
+input("\nA seguir, temos as tarefas adicionais. Aperte Enter para continuar...")
 # ---------------------------------------------------------
 #                 PERGUNTAS ADICIONAIS
 # ---------------------------------------------------------
@@ -377,7 +384,9 @@ input("Aperte Enter para continuar...")
 # TAREFA 14
 # Qual as estações mais populares para ínicio e fim de viagem? O número de start stations é igual ao número de end stations?
 
-print("\nTAREFA 14: número de start/end stations e as estações mais populares:")
+print("\nTAREFA 14: número de start/end stations e as estações mais populares (leva algum tempo):")
+# No meu computador, esta tarefa levou cerca de 4 min
+
 start_stations_types, start_stations_count = count_items(column_to_list(data_list,3))
 end_stations_types, end_stations_count = count_items(column_to_list(data_list,4))
 
